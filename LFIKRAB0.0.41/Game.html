@@ -1,0 +1,550 @@
+﻿<!DOCTYPE html>
+
+<style>
+
+section{
+    width: 150px;
+    height: 650px;
+    border: 0px;
+    border-style: solid;
+    border-color: black;
+    position: absolute;
+}
+#happyKid{
+    width: 160px;
+    height: 200px;
+    position: absolute;
+    top: 300px;
+    left: 25px;
+}
+#words{
+    width: 500px;
+    height: 60px;
+    border: 1px;
+    border-style: solid;
+    border-color: black;
+    position: absolute;
+    background-color: white;
+    top: 520px;
+    left: 450px;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 60px;
+	text-align:	center;
+}
+#timer{
+	position:absolute;
+	left:450px; 
+	top: 570px; 
+	width: 600px; 
+	height: 20px; 
+	background-color:green;
+
+}
+p{
+	width: 60px;
+    height: 60px;
+	position: absolute;
+	font-size: 40px;
+	font-family: "Comic Sans MS", "Comic Sans", cursive;
+	top: 10px;
+	left: 1150px;
+}
+div{
+	width: 60px;
+        height: 60px;
+	position: absolute;
+	top: 500px;
+	vertical-align: middle;
+	line-height: 60px;
+	font-size: 60px;
+	text-align: center;
+	background-color: white;
+	border: 0px;
+   	border-style: solid;
+  	border-color: black;
+	font-family: "Comic Sans MS", "Comic Sans", cursive;
+	color: black;
+}
+@keyframes jump {
+  from {top:300px;}
+  to {top:200;}
+}
+@keyframes jump{
+		0% { top: 300px;}
+		50% {transform: rotate(-40deg); top: 150px;}
+        100% {transform: rotate(0deg); top: 300px;}
+	}
+</style>
+<body onload="getReady(),arrayGen(),tick(),play()" onkeydown="bind(),keySensor(event),keyValidate(),play()">
+<audio controls id="ai" hidden onplaying="isAiPlay = true" onended="isAiPlay = false">
+ 		 <source src="Ai.m4a" type="audio/mpeg">
+</audio>
+<audio controls id="ai2" hidden>
+ 		 <source src="Ai.m4a" type="audio/mpeg">
+</audio>
+
+<audio controls id="itempickup" hidden onplaying="isItemPlay = true" onended="isItemPlay = false">
+ 		 <source src="ItemPickup.mp3" type="audio/mpeg">
+</audio>
+<audio controls id="itempickup" hidden>
+ 		 <source src="ItemPickup.mp3" type="audio/mpeg">
+</audio>
+
+<audio controls id="capacete" hidden onplaying="isCapacetePlay = true" onended="isCapacetePlay = false">
+ 		 <source src="Capacete.mp3" type="audio/mpeg">
+</audio>
+<audio controls id="capacete2" hidden>
+ 		 <source src="Capacete.mp3" type="audio/mpeg">
+</audio>
+
+<audio controls id="spray" hidden onplaying="isSprayPlay = true" onended="isSprayPlay = false">
+ 		 <source src="Spray.mp3" type="audio/mpeg">
+</audio>
+<audio controls id="spray" hidden>
+ 		 <source src="Spray.mp3" type="audio/mpeg">
+</audio>
+
+<audio controls id="musica" hidden loop>
+ 		 <source src="Musica.mp3" type="audio/mpeg">
+</audio>
+<audio controls id="over" hidden>
+ 		 <source src="Over.mp3" type="audio/mpeg">
+</audio>
+<script>
+var pontos = 0;
+var timer = 5;
+var musica2 = document.getElementById("over");
+var musica = document.getElementById("musica");
+var item = document.getElementById("itempickup");
+var item2 = document.getElementById("itempickup");
+var isItemPlay = false;
+var spray = document.getElementById("spray");
+var spray2 = document.getElementById("spray");
+var isSprayPlay = false;
+var ai = document.getElementById("ai");
+var ai2 = document.getElementById("ai2");
+var isAiPlay = false;
+var capacete = document.getElementById("capacete");
+var	capacete2 = document.getElementById("capacete2");
+var isCapacetePlay = false;
+var life = 6;
+var itens = [0,0,0];
+var isPlay = false;
+var String = "abacate   ";
+var wordIndex = 0;
+var dammage = true;
+var over = false;
+var array = [null,null,null,null,null,null,null,null,null];
+var run = 0;
+ var cores = ["red","green","blue","blue","blue","green","green","green","green","green","green","green","green","green","green","green","green","green","green","green"];
+ //var cores = ["green","pink","yellow","orange","cyan","purple","red","brown","salmon"];
+function getReady(){
+	document.getElementById("pontos").style.visibility = "hidden";
+	document.getElementById("life1").style.visibility = "hidden";
+	document.getElementById("life2").style.visibility = "hidden";
+	document.getElementById("life3").style.visibility = "hidden";
+	document.getElementById("timer").style.visibility = "hidden";
+	arrayGen();
+	move();
+	for (i = 0; i < 10; i++){
+			document.getElementById(i).style.visibility = "hidden";
+	}
+}
+function info(){
+	document.getElementById("play").style.visibility = "hidden";
+	document.getElementById("play2").style.visibility = "hidden";
+	document.getElementById("info").style.visibility = "visible";
+}
+function addPontos(pontos){
+	document.getElementById("pontos").innerHTML = "pontuação: " + pontos;
+}
+function start(){
+	pontos = 0;
+	addPontos(pontos)
+	document.getElementById("pontos").style.visibility = "visible";
+	itens = [0,0,0];
+	timer = 5;
+	wordIndex = 0;
+	for (i = 0; i < 10; i++){
+		document.getElementById(i).style.backgroundColor = "white";
+	}
+	document.getElementById("info").style.visibility = "hidden";
+	musica2.pause();
+	musica.currentTime = 0
+	musica.play();
+	over = false;
+	lifeMetter();
+	arrayGen();
+	move();
+	wordGen();
+	isPlay = true;
+	document.getElementById("timer").style.visibility = "visible";
+	document.getElementById("life1").style.visibility = "visible";
+	document.getElementById("life2").style.visibility = "visible";
+	document.getElementById("life3").style.visibility = "visible";
+	document.getElementById("play").style.visibility = "hidden";
+	document.getElementById("play2").style.visibility = "hidden";
+	life = 3;
+	for (i = 0; i < 10; i++){
+			document.getElementById(i).style.visibility = "visible";
+	}
+	document.getElementById(wordIndex).style.backgroundColor = "lightGreen";
+}
+function gameOver(){
+	if (!over){
+		musica2.play();
+	}
+	over = true;
+	musica.pause();
+	if (over){
+		isPlay = false;
+		play();
+	}
+}
+function play(){
+	if (!over){
+		if (keySensor(event) == "Escape" && isPlay){
+			isPlay = false;
+			document.getElementById("play").style.visibility = "visible";
+			document.getElementById("play").src = "pause.png";
+			document.getElementById("play2").style.visibility = "visible";
+			document.getElementById("play2").src = "pause.png";
+		}else if (keySensor(event) == "Escape") {
+			isPlay = true;
+			document.getElementById("play").style.visibility = "hidden";
+			document.getElementById("play2").style.visibility = "hidden";
+		
+		}
+	}else {
+		document.getElementById("play").style.visibility = "visible";
+		document.getElementById("play").src = "gameover.png";
+		document.getElementById("play2").style.visibility = "visible";
+		document.getElementById("play2").src = "gameover.png";
+	}
+
+}
+function playAi(){
+	if (!isAiPlay)ai.play();
+	else ai2.play();
+
+}
+function playSpray(){
+	if (!isSprayPlay)spray.play();
+	else spray2.play();
+
+}
+function playItem(){
+	if (!isItemPlay)item.play();
+	else item.play();
+
+}
+function playCapacete(){
+	if (!isCapacetePlay)capacete.play();
+	else capacete2.play();
+
+}
+function hover(){
+	document.getElementById("play").style.opacity = 0;
+	document.getElementById("play2").style.opacity = 100;
+}
+function hoverOff(){
+	document.getElementById("play").style.opacity = 100;
+	document.getElementById("play2").style.opacity = 0;
+}
+
+
+function numGen(num){
+    return Math.floor(Math.random() * num);
+};
+function arrayGen(){
+    for (i = 0; i< array.length; i++){
+        array[i] = numGen(17);
+        console.log(array[i]);
+    };
+    console.log(array);
+};
+function wordGen(){
+let words = ["rua       ","faixa     ","poste     ","sinal     ","carro     ","semaforo  ","rotatoria ","pedestre  ","ciclovia  ","capacete  ","segurança ","placas    ","atençao   ","travessia ","pista     ","circulaçao","onibus    ","fluxo     ","aceleraçao","rolamento ","ida       ","curva     ","roda     ","passeio   "];
+let word = words[numGen(24)];
+//document.getElementById("words").innerHTML = word;
+String = word;
+for (i = 0; i < String.length; i++){
+		console.log(String[i]);
+		document.getElementById(i).innerHTML = String[i];
+	}
+}
+function keySensor(event){
+	return event.key;
+}
+var bike = 0;
+function keyValidate(){
+	if (isPlay){
+		let key = keySensor(event);
+		if (key == String[wordIndex]){
+			document.getElementById("happyKid").src = "bike" + bike + ".png";
+			bike++;
+			if (bike > 2){
+				bike = 0;
+			}
+			wordIndex++;
+		}else if (key != "Escape" && key != " " && key != "1"){
+			playAi();
+			if (life > 0)life--;
+			lifeMetter();
+		}
+		if (String[wordIndex] == " " || wordIndex == 10){
+			pontos += timer + wordIndex;
+			addPontos(pontos);
+			timer = 5;
+			document.getElementById(wordIndex - 1).style.backgroundColor = "white";
+			run += wordIndex;
+			wordIndex = 0;
+			console.log(run);
+			wordGen();
+		}
+		if (wordIndex > 0){
+			document.getElementById(wordIndex).style.backgroundColor = "lightGreen";
+			document.getElementById(wordIndex - 1).style.backgroundColor = "white";
+		}else document.getElementById(wordIndex).style.backgroundColor = "lightGreen";
+	}
+}
+function go(){
+    let Num = numGen(17);
+    for (i = 0; i < array.length - 1; i++){
+        array[i] = array[i+1];
+    };
+    array[array.length - 1] = numGen(17);
+    console.log(array); 
+}
+function pulo(){
+    dammage = false;
+    //document.getElementById("happyKid").style.animationDirection = "alternate";
+    //document.getElementById("happyKid").style.animationName = "jump";
+	//document.getElementById("happyKid").addEventListener("animationiteration", pulado);
+    
+}
+function pulado(){
+    dammage = true;
+    document.getElementById("happyKid").style.animationName = "none";
+    console.log(dammage);
+}
+function lifeMetter(num){
+	switch(num){
+		case 0:
+			document.getElementById("life1").src = "coracaomenos.png";
+			document.getElementById("life2").src = "coracaomenos.png";
+			document.getElementById("life3").src = "coracaomenos.png";
+			gameOver();
+			break;
+		case 1:
+			document.getElementById("life1").src = "coracao.png";
+			document.getElementById("life2").src = "coracaomenos.png";
+			document.getElementById("life3").src = "coracaomenos.png";
+			break;
+		case 2:
+			document.getElementById("life1").src = "coracao.png";
+			document.getElementById("life2").src = "coracao.png";
+			document.getElementById("life3").src = "coracaomenos.png";
+			break;
+		case 3:
+			document.getElementById("life1").src = "coracao.png";
+			document.getElementById("life2").src = "coracao.png";
+			document.getElementById("life3").src = "coracao.png";
+			break;
+		case 4:
+			document.getElementById("life1").src = "escudo.png";
+			document.getElementById("life2").src = "coracao.png";
+			document.getElementById("life3").src = "coracao.png";
+			break;
+		case 5:
+			document.getElementById("life1").src = "escudo.png";
+			document.getElementById("life2").src = "escudo.png";
+			document.getElementById("life3").src = "coracao.png";
+			break;
+		case 6:
+			document.getElementById("life1").src = "escudo.png";
+			document.getElementById("life2").src = "escudo.png";
+			document.getElementById("life3").src = "escudo.png";
+			break;
+	}
+}
+function itemMetter(){
+		if (itens[0] == 0 && itens[1] == 1){
+			itens[0] = 1;
+			itens[1] = 0;
+		}
+		if (itens[1] == 0){
+			if (itens[2] == 1){
+				itens[1] = 1;
+				itens[2] = 0;
+			}
+		}
+		
+		
+		
+		for (i = 0; i < itens.length; i++){
+			if (itens[i] == 1){
+				document.getElementById("item" + i).src = "spray.png";
+			}
+			if (itens[i] == 0){
+				document.getElementById("item" + i).src = "nothing.png";
+			}
+		}
+}
+function bind(){
+	let bind = keySensor(event);
+	if (bind == " "){
+			if (run >= 3){
+				run -= 3;
+			}else run -= run;
+			
+			console.log(run);
+		}
+		
+	if (bind == "1"){
+		action(1);
+	}
+	
+	if (bind == " " && over){
+		musica2.currentTime = 0;
+		start();
+	}
+}
+var muted = false;
+function mute(){
+	if (!muted){
+		document.getElementById("mute").src = "mute2.png";
+		muted = true;
+		musica.volume = 0;
+	}else {
+		document.getElementById("mute").src = "mute.png";
+		muted = false;
+		musica.volume = 1;
+	}
+}
+function tick(){
+	let time = 5;
+	let ticktime = 200 - run*10;
+    setInterval(function () {
+		lifeMetter(life);
+        if (isPlay){
+			document.getElementById("timer").style.transform = "scale("+ (timer/5) +", 1)";
+			if (time == 1){
+				timer--;
+				document.getElementById("timer").style.transform = "scale("+ (timer/5) +", 1)";
+				console.log(timer);
+				if (timer == 0){
+					playAi();
+					life--;
+					lifeMetter(life);
+					timer = 5;
+				}
+			}
+			itemMetter();
+			if (document.getElementById("a").style.backgroundColor == "red"){
+				playAi();
+				life--;
+				lifeMetter(life);
+			}
+			time--;
+			//console.log(time);
+			if (time == 0){
+				time = 5;
+			
+			}
+			if (run > 0){
+				run--;
+				move();
+			}
+			if (array[0] == 2){
+				if (life < 6){
+					playCapacete();
+					life++;
+					array[0] = 6;
+					updateArray();
+				}
+			}
+			if (array[0] == 3){
+				if (life < 6){
+					playItem();
+					itens[2] = 1;
+					array[0] = 19;
+					updateArray();
+					itemMetter();
+				}
+			}
+			for (i = 0; i < array.length; i++){
+				if (array[i] == 0 && time == 3){
+					console.log(array[i]);
+					array[i] = 17;
+					updateArray();
+				}
+				else if (array[i] == 17 && time == 3){
+					console.log(array[i]);
+					array[i] = 0;
+					updateArray();
+				}
+			}
+		}
+    }, ticktime);
+}
+function updateArray(){
+	let road = ["a","b","c","d","e","f","g","h","i"];
+	for (i = 0; i < array.length; i++){
+        document.getElementById(road[i]).style.backgroundColor = cores[array[i]];
+		if (array[i] > 9){
+			document.getElementById("img" + i).src = "ceu"+ (array[i] - 10) +".png";
+		}
+		else document.getElementById("img" + i).src = "ceu"+ array[i] +".png";
+		document.getElementById("cenario" + i).src = "road"+ (array[i]) +".png";
+    };
+}
+function move(){
+	let road = ["a","b","c","d","e","f","g","h","i"];
+    go();
+    for (i = 0; i < array.length; i++){
+        document.getElementById(road[i]).style.backgroundColor = cores[array[i]];
+		if (array[i] > 9){
+			document.getElementById("img" + i).src = "ceu"+ (array[i] - 10) +".png";
+		}
+		else document.getElementById("img" + i).src = "ceu"+ array[i] +".png";
+		document.getElementById("cenario" + i).src = "road"+ (array[i]) +".png";
+    };
+    pulo();
+}
+
+function action(num){
+	let road = ["a","b","c","d","e","f","g","h","i"];
+    if ((array[num] == 0 || array[num] == 17) && itens[0] == 1){
+		playSpray();
+		document.getElementById(road[num]).style.backgroundColor = "green";
+		array[num] = 18;
+		itens[0] = 0;
+		itemMetter;
+		updateArray();
+	}
+}
+console.log(array); 
+</script>
+
+<section onclick="action('0')" id="a"><img id="img0" src="ceu0.png" width="150" height="400" ><img id="cenario0" onclick="action('0')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('1')" id="b" style="left: 160px" ><img id="img1" src="ceu1.png" width="150" height="400" ><img id="cenario1" onclick="action('1')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('2')" id="c" style="left: 310px" ><img id="img2" src="ceu2.png" width="150" height="400" ><img id="cenario2" onclick="action('2')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('3')" id="d" style="left: 460px" ><img id="img3" src="ceu3.png" width="150" height="400" ><img id="cenario3" onclick="action('3')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('4')" id="e" style="left: 610px" ><img id="img4" src="ceu4.png" width="150" height="400" ><img id="cenario4" onclick="action('4')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('5')" id="f" style="left: 760px" ><img id="img5" src="ceu5.png" width="150" height="400" ><img id="cenario5" onclick="action('5')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('6')" id="g" style="left: 910px" ><img id="img6" src="ceu6.png" width="150" height="400" ><img id="cenario6" onclick="action('6')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('7')" id="h" style="left: 1060px" ><img id="img7" src="ceu7.png" width="150" height="400" ><img id="cenario7" onclick="action('7')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px"></section>
+<section onclick="action('8')" id="i" style="left: 1210px" ><img id="img8" src="ceu8.png" width="150" height="400" ><img id="cenario8" onclick="action('8')" src="road7.png" width="150" height="400" style="position:absolute; top: 250px; left:0px" ></section>
+<img onclick="info()" onmouseleave="hoverOff()" onmouseover="hover()" width="800px" height="300px" id="play" src="play.png" style="position:absolute; left:350px; top:100px;">
+<img onclick="info()" onmouseleave="hoverOff()" onmouseover="hover()" width="800px" height="300px" id="play2" src="play2.png" style="position:absolute; opacity:0; left:350px; top:100px;">
+<img class="heart" id="life1" src="coracao.png" width="60px" height="60px" style="position: absolute; top: 50px; left: 50px"><img class="heart" id="life2" src="coracao.png" width="60px" height="60px" style="position: absolute; top: 50px; left: 130px"><img class="heart" id="life3" src="coracao.png" width="60px" height="60px" style="position: absolute; top: 50px; left: 200px">
+<img class="item" id="item0" src="nothing.png" width="60px" height="60px" style="position: absolute; top: 110px; left: 50px"><img class="item" id="item1" src="nothing.png" width="60px" height="60px" style="position: absolute; top: 110px; left: 130px"><img class="item" id="item2" src="nothing.png" width="60px" height="60px" style="position: absolute; top: 110px; left: 200px">
+<section id="timer" ></section>
+<img id="happyKid" src="bike1.png" style="position:absolute; top: 400px; left:20px">
+<img id="mute" src="mute.png" style="position:absolute; top: 600px; left:20px" onclick="mute()">
+<img id="info" src="info.png" width="1355px" height="auto" style="position:absolute; visibility:hidden" onclick="start()">
+<p id="pontos">100pontos</p>
+<div id="0" style="left:450px"> </div><div id="1" style="left:510px"> </div><div id="2" style="left:570px">J </div><div id="3" style="left:630px">o </div><div id="4" style="left:690px">g </div><div id="5" style="left:750px">a </div><div id="6" style="left:810px">r </div><div id="7" style="left:870px">! </div><div id="8" style="left:930px"> </div><div id="9" style="left:990px"> </div>
+</body>
