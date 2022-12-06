@@ -294,7 +294,7 @@ function keyValidate(){
 			lifeMetter();
 		}
 		if (String[wordIndex] == " " || wordIndex == 10){
-			pontos += timer + wordIndex;
+			pontos += timer * 3 + wordIndex;
 			addPontos(pontos);
 			timer = 5;
 			document.getElementById(wordIndex - 1).style.backgroundColor = "white";
