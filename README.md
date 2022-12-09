@@ -15,5 +15,3 @@ execute Game.html to open the game.
 
 execute Game.html para abrir o jogo 
 
-
-Vai à merda
